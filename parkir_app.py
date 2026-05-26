@@ -235,4 +235,124 @@ with tab2:
                 st.markdown("---")
                 col_kiri, col_kanan = st.columns(2)
                 with col_kiri:
-                    st.markdown(f"**Plat Nomor** :
+                    st.markdown(f"**Plat Nomor** : {struk['plat']}")
+                    st.markdown(f"**Kendaraan** : {struk['merk']}")
+                    st.markdown(f"**Pemilik** : {struk['pemilik']}")
+                    st.markdown(f"**Status Kelas** : {struk['status']}")
+                with col_kanan:
+                    st.markdown(f"**Jam Masuk** : {struk['waktu_masuk']}")
+                    st.markdown(f"**Jam Keluar** : {struk['waktu_keluar']}")
+                    st.markdown(f"**Durasi Parkir** : {struk['lama_jam']} Jam (Skala Simulasi)")
+                st.markdown("---")
+                st.info(f"### TOTAL TAGIHAN: Rp {struk['total_biaya']:,}")
+            else:
+                st.error(f"[-] ERROR: Kendaraan dengan plat nomor '{plat_keluar.upper()}' tidak ditemukan.")
+        else:
+            st.warning("Silakan isi plat nomor target terlebih dahulu.")
+
+# --- MENU 3: DENAH PARKIR ---
+with tab3:
+    st.header("Monitoring Denah Jalur Parkir")
+    st.metric(label="Jumlah Kendaraan Terparkir Saat Ini", value=f"{parkiran.kapasitas} Unit")
+    
+    list_mobil = parkiran.konversi_ke_matriks()
+    if list_mobil:
+        st.markdown("**Urutan Lajur Parkir**")
+        nama_kolom = ["No", "Plat Nomor", "Merk Kendaraan", "Nama Pemilik", "Status", "Jam Masuk"]
+        tabel_statis = [dict(zip(nama_kolom, mobil)) for mobil in list_mobil]
+        st.table(tabel_statis)
+    else:
+        st.info("Kondisi Parkiran Kosong. Belum ada kendaraan yang terdaftar masuk.")
+
+# --- MENU 4: CARI MOBIL ---
+with tab4:
+    st.header("🔍 Pelacakan Posisi Kendaraan")
+    st.caption("Gunakan menu ini untuk mengetahui di urutan ke berapa mobil berada di dalam antrean.")
+    plat_cari = st.text_input("Masukkan Plat Nomor yang Dicari")
+    
+    if st.button("Lacak Posisi"):
+        if plat_cari:
+            hasil_cari = parkiran.cari_kendaraan(plat_cari)
+            if hasil_cari:
+                st.success(f"Kendaraan ditemukan pada urutan ke-**{hasil_cari['posisi']}** dari pintu keluar!")
+                st.markdown("### 📋 Detail Posisi Antrean")
+                st.write(f"**Nama Pemilik:** {hasil_cari['pemilik']} ({hasil_cari['status']})")
+                st.write(f"**Model Mobil:** {hasil_cari['merk']}")
+                st.write(f"**Jam Masuk:** {hasil_cari['jam_masuk']}")
+                st.markdown("---")
+                st.warning(f"⬅️ **Mobil di Depannya:** {hasil_cari['mobil_depan']}")
+                st.info(f"➡️ **Mobil di Belakangnya:** {hasil_cari['mobil_belakang']}")
+            else:
+                st.error("Kendaraan tidak ditemukan di dalam area parkir.")
+        else:
+            st.warning("Masukkan plat nomor terlebih dahulu.")
+
+# --- MENU 5: KEUANGAN ---
+with tab5:
+    st.header("💰 Laporan Pendapatan Kasir")
+    st.caption("Data pendapatan kumulatif dari kendaraan yang sudah melakukan Check-Out.")
+    
+    riwayat = st.session_state.riwayat_pendapatan
+    if riwayat:
+        total_omset = sum(item['total_biaya'] for item in riwayat)
+        
+        col_m1, col_m2 = st.columns(2)
+        col_m1.metric("Total Pendapatan", f"Rp {total_omset:,}")
+        col_m2.metric("Total Mobil Keluar", f"{len(riwayat)} Unit")
+        
+        st.markdown("### 📜 Riwayat Transaksi")
+        kolom_keuangan = ["Plat Nomor", "Status Kelas", "Durasi", "Total Bayar"]
+        matriks_keuangan = []
+        for r in riwayat:
+            matriks_keuangan.append([r['plat'], r['status'], f"{r['lama_jam']} Jam", f"Rp {r['total_biaya']:,}"])
+            
+        tabel_keuangan = [dict(zip(kolom_keuangan, baris)) for baris in matriks_keuangan]
+        st.table(tabel_keuangan)
+    else:
+        st.info("Belum ada transaksi keuangan tercatat. Silakan lakukan proses Check-Out terlebih dahulu.")
+
+# --- MENU 6: PENGATURAN SYSTEM ---
+with tab6:
+    st.header("⚙️ Pengontrol Sistem Parkir")
+    st.caption("Menu utilitas untuk memodifikasi parameter sistem atau meriset data memori.")
+    
+    # Fitur Ubah Kapasitas Dinamis
+    kapasitas_baru = st.number_input("Atur Ulang Batas Maksimal Slot Parkir", min_value=1, max_value=50, value=parkiran.total_slot_maksimal)
+    if st.button("Simpan Batas Kapasitas"):
+        parkiran.total_slot_maksimal = kapasitas_baru
+        st.success(f"Kapasitas maksimal berhasil diubah menjadi {kapasitas_baru} unit!")
+        
+    st.markdown("---")
+    st.subheader("⚠️ Zona Bahaya")
+    st.write("Aksi di bawah ini akan menghapus seluruh data antrean kendaraan di dalam memori saat ini.")
+
+    # Tombol pemicu awal reset
+    if st.button("RESET & KOSONGKAN SELURUH PARKIRAN", type="primary", use_container_width=True):
+        st.session_state.konfirmasi_reset = True
+        st.rerun()
+
+    # Tampilan Pop-up Konfirmasi jika status konfirmasi_reset bernilai True
+    if st.session_state.konfirmasi_reset:
+        st.markdown("""
+            <div style="background-color: #ffffff; padding: 25px; border-top: 6px solid #ff4b4b; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); margin-top: 15px; margin-bottom: 20px;">
+                <h4 style="color: #ff4b4b; margin-top: 0; margin-bottom: 10px;">🛑 Konfirmasi Pengosongan Lapangan Parkir</h4>
+                <p style="color: #31333F; font-size: 14.5px; line-height: 1.6; margin-bottom: 0;">
+                    Tindakan ini bersifat <b>permanen</b>. Seluruh data kendaraan terparkir saat ini beserta seluruh data laporan keuangan kasir akan <b>dihapus total</b> dari memori sistem. Apakah Anda yakin?
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        col_ya, col_batal = st.columns(2)
+        
+        with col_ya:
+            if st.button("Ya, Kosongkan Sekarang", type="primary", use_container_width=True):
+                parkiran.reset_parkiran()
+                st.session_state.riwayat_pendapatan = []
+                st.session_state.konfirmasi_reset = False
+                st.success("Sistem berhasil dikosongkan total!")
+                st.rerun()
+                
+        with col_batal:
+            if st.button("Batalkan Proses", type="secondary", use_container_width=True):
+                st.session_state.konfirmasi_reset = False
+                st.rerun()
