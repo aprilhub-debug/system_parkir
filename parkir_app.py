@@ -301,11 +301,51 @@ with tab6:
         st.success(f"Kapasitas maksimal berhasil diubah menjadi {kapasitas_baru} unit!")
         
     st.markdown("---")
-    st.subheader("⚠️ WARNING")
+    st.subheader("⚠️ Zona Bahaya")
     st.write("Aksi di bawah ini akan menghapus seluruh data antrean kendaraan di dalam memori saat ini.")
     
-    if st.button("RESET & KOSONGKAN SELURUH PARKIRAN", type="primary"):
-        parkiran.reset_parkiran()
-        st.session_state.riwayat_pendapatan = []
-        st.success("Sistem berhasil dikosongkan total! Semua data kendaraan dan keuangan telah di-reset.")
-        st.rerun()
+    # Inisialisasi state untuk mengontrol pop-up konfirmasi kustom
+    if 'konfirmasi_reset' not in st.session_state:
+        st.session_state.konfirmasi_reset = False
+
+    # Tombol pemicu awal
+    if st.button("RESET & KOSONGKAN SELURUH PARKIRAN", type="primary", use_container_width=True):
+        st.session_state.konfirmasi_reset = True
+
+    # Logika ketika user menekan tombol reset (Pop-up & Background Berubah)
+    if st.session_state.konfirmasi_reset:
+        # 1. Suntikkan CSS untuk mengubah background seluruh web menjadi merah pastel yang soft (tidak norak)
+        st.markdown("""
+            <style>
+                .stApp {
+                    background-color: #fff5f5;
+                    transition: background-color 0.4s ease-in-out;
+                }
+            </style>
+        """, unsafe_allow_html=True)
+        
+        # 2. Tampilan Kotak Pesan Pop-up/Dialog Konfirmasi yang Kontras (Putih Bersih)
+        st.markdown("""
+            <div style="background-color: #ffffff; padding: 25px; border-top: 6px solid #ff4b4b; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-top: 15px; margin-bottom: 20px;">
+                <h4 style="color: #ff4b4b; margin-top: 0; margin-bottom: 10px;">🛑 Konfirmasi Pengosongan Lapangan Parkir</h4>
+                <p style="color: #31333F; font-size: 14.5px; line-height: 1.6; margin-bottom: 0;">
+                    Tindakan ini bersifat <b>permanen</b>. Seluruh data kendaraan terparkir saat ini beserta seluruh data laporan keuangan kasir akan <b>dihapus total</b> dari memori sistem. Apakah Anda yakin?
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        # Tombol aksi di dalam pop-up konfirmasi (Ya / Batal)
+        col_ya, col_batal = st.columns(2)
+        
+        with col_ya:
+            if st.button("Ya, Kosongkan Sekarang", type="primary", use_container_width=True):
+                parkiran.reset_parkiran()
+                st.session_state.riwayat_pendapatan = []
+                st.session_state.konfirmasi_reset = False  # Matikan state konfirmasi
+                st.success("Sistem berhasil dikosongkan total!")
+                st.rerun()
+                
+        with col_batal:
+            if st.button("Batalkan Proses", type="secondary", use_container_width=True):
+                st.session_state.konfirmasi_reset = False  # Matikan state konfirmasi & kembalikan background ke normal
+                st.rerun()
