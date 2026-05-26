@@ -147,7 +147,7 @@ if 'konfirmasi_reset' not in st.session_state:
 if st.session_state.konfirmasi_reset:
     bg_gradient = "linear-gradient(to bottom right, #ffcccc, #fff5f5)"
 else:
-    bg_gradient = "linear-gradient(to bottom right, #999966, #ccffcc)"
+    bg_gradient = "linear-gradient(to bottom right, #ff9999, #ccffcc)"
 
 st.markdown(f"""
     <style>
