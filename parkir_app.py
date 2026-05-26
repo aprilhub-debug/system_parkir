@@ -144,11 +144,11 @@ if 'konfirmasi_reset' not in st.session_state:
     st.session_state.konfirmasi_reset = False
 
 # --- KUSTOMISASI GRADASI BACKGROUND GLOBAL ---
-# Jika masuk zona bahaya reset, warna berubah jadi gradasi merah-pink pastel yang soft
+# Jika masuk zona bahaya reset, warna berubah
 if st.session_state.konfirmasi_reset:
-    bg_gradient = "linear-gradient(to bottom right, #ffcccc, #fff5f5)"
+    bg_gradient = "linear-gradient(to bottom right, #FF0000)"
 else:
-    # Gradasi utama sesuai request dari "#999966" ke "#ccffcc"
+    # Gradasi utama
     bg_gradient = "linear-gradient(to bottom right, #ff9999, #ccffcc)"
 
 st.markdown(f"""
@@ -313,7 +313,7 @@ with tab5:
 
 # --- MENU 6: PENGATURAN SYSTEM ---
 with tab6:
-    st.header("⚙️ Pengontrol Sistem Parkir")
+    st.header("⚙️ Setting Sistem Parkir")
     st.caption("Menu utilitas untuk memodifikasi parameter sistem atau meriset data memori.")
     
     # Fitur Ubah Kapasitas Dinamis
@@ -323,7 +323,7 @@ with tab6:
         st.success(f"Kapasitas maksimal berhasil diubah menjadi {kapasitas_baru} unit!")
         
     st.markdown("---")
-    st.subheader("⚠️ Zona Bahaya")
+    st.subheader("⚠️ WARNING")
     st.write("Aksi di bawah ini akan menghapus seluruh data antrean kendaraan di dalam memori saat ini.")
 
     # Tombol pemicu awal reset
