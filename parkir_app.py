@@ -59,7 +59,7 @@ class SistemParkirValet:
                 waktu_keluar = datetime.now()
                 selisih_waktu = waktu_keluar - current.waktu_masuk
                 
-                # Simulasi: 1 menit nyata = 1 jam parkir
+                # Simulasi: 1 minute nyata = 1 jam parkir
                 lama_jam = math.ceil(selisih_waktu.total_seconds() / 60)
                 if lama_jam == 0: lama_jam = 1 
                 
@@ -105,7 +105,7 @@ class SistemParkirValet:
         while current:
             if current.plat == target_plat:
                 return {
-                    "posisi": posisi
+                    "posisi": posisi,
                     "plat": current.plat,
                     "merk": current.merk,
                     "pemilik": current.pemilik,
@@ -137,19 +137,17 @@ class SistemParkirValet:
 
 # ========== APLIKASI UTAMA (STREAMLIT UI) ==========
 
-st.set_page_config(page_title="Smart Parking System", page_icon="🚗", layout="centered")
+st.set_page_config(page_title="Smart Parking System Pro", page_icon="🏢", layout="centered")
 
 # Inisialisasi session state konfirmasi di bagian paling atas
 if 'konfirmasi_reset' not in st.session_state:
     st.session_state.konfirmasi_reset = False
 
 # --- KUSTOMISASI GRADASI BACKGROUND GLOBAL ---
-# Jika masuk zona bahaya reset, warna berubah
 if st.session_state.konfirmasi_reset:
-    bg_gradient = "linear-gradient(to bottom right, #FFFFFF)"
+    bg_gradient = "linear-gradient(to bottom right, #ffcccc, #fff5f5)"
 else:
-    # Gradasi utama
-    bg_gradient = "linear-gradient(to bottom right, #ff9999, #ccffcc)"
+    bg_gradient = "linear-gradient(to bottom right, #999966, #ccffcc)"
 
 st.markdown(f"""
     <style>
@@ -159,7 +157,6 @@ st.markdown(f"""
             transition: background 0.5s ease-in-out;
         }}
         
-        /* Tambahan sedikit tweak agar tab menu terlihat lebih kontras dan menyatu dengan gradasi */
         .stTabs [data-baseweb="tab-list"] {{
             background-color: rgba(255, 255, 255, 0.5);
             padding: 5px;
@@ -311,7 +308,7 @@ with tab5:
 
 # --- MENU 6: PENGATURAN SYSTEM ---
 with tab6:
-    st.header("⚙️ Setting Sistem Parkir")
+    st.header("⚙️ Pengontrol Sistem Parkir")
     
     # Fitur Ubah Kapasitas Dinamis
     kapasitas_baru = st.number_input("Atur Ulang Batas Maksimal Slot Parkir", min_value=1, max_value=50, value=parkiran.total_slot_maksimal)
