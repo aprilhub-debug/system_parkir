@@ -146,7 +146,7 @@ if 'konfirmasi_reset' not in st.session_state:
 # --- KUSTOMISASI GRADASI BACKGROUND GLOBAL ---
 # Jika masuk zona bahaya reset, warna berubah
 if st.session_state.konfirmasi_reset:
-    bg_gradient = "linear-gradient(to bottom right, #FF0000)"
+    bg_gradient = "linear-gradient(to bottom right, #2F4F4F)"
 else:
     # Gradasi utama
     bg_gradient = "linear-gradient(to bottom right, #ff9999, #ccffcc)"
