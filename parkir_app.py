@@ -198,7 +198,7 @@ with tab1:
     with st.form("form_pendaftaran", clear_on_submit=True):
         plat_input = st.text_input("Plat Nomor Kendaraan", placeholder="Contoh: B 1234 ABC")
         merk_input = st.text_input("Merk Kendaraan", placeholder="Contoh: Honda Brio Hitam")
-        pemilik_input = st.text_input("Nama Lengkap Pemilik", placeholder="Contoh: Ahmad Subarjo")
+        pemilik_input = st.text_input("Nama Lengkap Pemilik", placeholder="Contoh: Suci Apriliani")
         status_input = st.radio("Pilih Tipe Layanan Parkir", ["Reguler", "VIP"])
         
         proses_masuk = st.form_submit_button("Daftarkan & Parkirkan")
@@ -266,7 +266,6 @@ with tab3:
 # --- MENU 4: CARI MOBIL ---
 with tab4:
     st.header("🔍 Pelacakan Posisi Kendaraan")
-    st.caption("Gunakan menu ini untuk mengetahui di urutan ke berapa mobil berada di dalam antrean.")
     plat_cari = st.text_input("Masukkan Plat Nomor yang Dicari")
     
     if st.button("Lacak Posisi"):
@@ -313,7 +312,6 @@ with tab5:
 # --- MENU 6: PENGATURAN SYSTEM ---
 with tab6:
     st.header("⚙️ Setting Sistem Parkir")
-    st.caption("Menu utilitas untuk memodifikasi parameter sistem atau meriset data memori.")
     
     # Fitur Ubah Kapasitas Dinamis
     kapasitas_baru = st.number_input("Atur Ulang Batas Maksimal Slot Parkir", min_value=1, max_value=50, value=parkiran.total_slot_maksimal)
