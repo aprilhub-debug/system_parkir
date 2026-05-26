@@ -143,11 +143,9 @@ st.set_page_config(page_title="Smart Parking System Pro", page_icon="🏢", layo
 if 'konfirmasi_reset' not in st.session_state:
     st.session_state.konfirmasi_reset = False
 
-# --- KUSTOMISASI BACKGROUND WARNA GLOBAL (SEJAK AWAL MASUK) ---
-# Jika dalam mode konfirmasi reset, warna background menjadi merah pastel lembut.
-# Jika kondisi normal, berwarna mint-blue grey modern yang bersih (#f4f6f9).
+# --- KUSTOMISASI BACKGROUND WARNA GLOBAL ---
 if st.session_state.konfirmasi_reset:
-    bg_color = "#fff5f5"
+    bg_color = "#8c7373"
 else:
     bg_color = "#f4f6f9"
 
