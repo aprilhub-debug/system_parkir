@@ -98,7 +98,6 @@ class SistemParkirValet:
         return None
 
     def cari_kendaraan(self, target_plat):
-        """Mencari kendaraan dan menghitung posisinya dari pintu keluar (HEAD)"""
         target_plat = target_plat.upper()
         current = self.head
         posisi = 1
@@ -131,7 +130,6 @@ class SistemParkirValet:
         return data
 
     def reset_parkiran(self):
-        """Mengosongkan seluruh Linked List"""
         self.head = None
         self.tail = None
         self.kapasitas = 0
@@ -141,10 +139,32 @@ class SistemParkirValet:
 
 st.set_page_config(page_title="Smart Parking System Pro", page_icon="🏢", layout="centered")
 
+# Inisialisasi session state konfirmasi di bagian paling atas agar warna background sinkron
+if 'konfirmasi_reset' not in st.session_state:
+    st.session_state.konfirmasi_reset = False
+
+# --- KUSTOMISASI BACKGROUND WARNA GLOBAL (SEJAK AWAL MASUK) ---
+# Jika dalam mode konfirmasi reset, warna background menjadi merah pastel lembut.
+# Jika kondisi normal, berwarna mint-blue grey modern yang bersih (#f4f6f9).
+if st.session_state.konfirmasi_reset:
+    bg_color = "#fff5f5"
+else:
+    bg_color = "#f4f6f9"
+
+st.markdown(f"""
+    <style>
+        .stApp {{
+            background-color: {bg_color};
+            transition: background-color 0.4s ease-in-out;
+        }}
+    </style>
+""", unsafe_allow_html=True)
+
+
 st.title("🚗 Smart Parking System")
 st.caption("Sistem Manajemen Parkir Terintegrasi - Berbasis Doubly Linked List")
 
-# Inisialisasi Session State agar data tidak hilang saat web rerun
+# Inisialisasi Session State data
 if 'parkiran' not in st.session_state:
     st.session_state.parkiran = SistemParkirValet()
 if 'riwayat_pendapatan' not in st.session_state:
@@ -152,7 +172,7 @@ if 'riwayat_pendapatan' not in st.session_state:
 
 parkiran = st.session_state.parkiran
 
-# MEMBUAT 6 TAB MENU BARU
+# MEMBUAT 6 TAB MENU
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📥 Check-In", 
     "📤 Check-Out", 
@@ -165,7 +185,6 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 # --- MENU 1: CHECK-IN ---
 with tab1:
     st.header("Form Registrasi Kendaraan Masuk")
-    # Indikator kuota parkir real-time
     sisa_slot = parkiran.total_slot_maksimal - parkiran.kapasitas
     st.info(f"Slot Tersedia: **{sisa_slot}** / {parkiran.total_slot_maksimal} Unit")
     
@@ -202,10 +221,8 @@ with tab2:
             struk = parkiran.proses_keluar(plat_keluar)
             if struk:
                 st.success("Akses Terverifikasi! Kendaraan dilepaskan dari lajur antrean.")
-                # Simpan ke riwayat pendapatan global
                 st.session_state.riwayat_pendapatan.append(struk)
                 
-                # Desain Struk
                 st.markdown("### 🧾 STRUK SMART PARKING")
                 st.markdown("---")
                 col_kiri, col_kanan = st.columns(2)
@@ -250,8 +267,6 @@ with tab4:
             hasil_cari = parkiran.cari_kendaraan(plat_cari)
             if hasil_cari:
                 st.success(f"Kendaraan ditemukan pada urutan ke-**{hasil_cari['posisi']}** dari pintu keluar!")
-                
-                # Tampilkan detail informasi posisi node dalam linked list
                 st.markdown("### 📋 Detail Posisi Antrean")
                 st.write(f"**Nama Pemilik:** {hasil_cari['pemilik']} ({hasil_cari['status']})")
                 st.write(f"**Model Mobil:** {hasil_cari['merk']}")
@@ -264,14 +279,13 @@ with tab4:
         else:
             st.warning("Masukkan plat nomor terlebih dahulu.")
 
-# --- MENU 5: KEUANGAN (MENU BARU) ---
+# --- MENU 5: KEUANGAN ---
 with tab5:
     st.header("💰 Laporan Pendapatan Kasir")
     st.caption("Data pendapatan kumulatif dari kendaraan yang sudah melakukan Check-Out.")
     
     riwayat = st.session_state.riwayat_pendapatan
     if riwayat:
-        # Hitung total uang masuk
         total_omset = sum(item['total_biaya'] for item in riwayat)
         
         col_m1, col_m2 = st.columns(2)
@@ -287,9 +301,9 @@ with tab5:
         tabel_keuangan = [dict(zip(kolom_keuangan, baris)) for baris in matriks_keuangan]
         st.table(tabel_keuangan)
     else:
-        st.info("Belum ada transaksi keuangan keuangan teratat. Silakan lakukan proses Check-Out terlebih dahulu.")
+        st.info("Belum ada transaksi keuangan tercatat. Silakan lakukan proses Check-Out terlebih dahulu.")
 
-# --- MENU 6: PENGATURAN SYSTEM (MENU BARU) ---
+# --- MENU 6: PENGATURAN SYSTEM ---
 with tab6:
     st.header("⚙️ Pengontrol Sistem Parkir")
     st.caption("Menu utilitas untuk memodifikasi parameter sistem atau meriset data memori.")
@@ -303,28 +317,14 @@ with tab6:
     st.markdown("---")
     st.subheader("⚠️ Zona Bahaya")
     st.write("Aksi di bawah ini akan menghapus seluruh data antrean kendaraan di dalam memori saat ini.")
-    
-    # Inisialisasi state untuk mengontrol pop-up konfirmasi kustom
-    if 'konfirmasi_reset' not in st.session_state:
-        st.session_state.konfirmasi_reset = False
 
-    # Tombol pemicu awal
+    # Tombol pemicu awal reset
     if st.button("RESET & KOSONGKAN SELURUH PARKIRAN", type="primary", use_container_width=True):
         st.session_state.konfirmasi_reset = True
+        st.rerun()
 
-    # Logika ketika user menekan tombol reset (Pop-up & Background Berubah)
+    # Tampilan Pop-up Konfirmasi jika status konfirmasi_reset bernilai True
     if st.session_state.konfirmasi_reset:
-        # 1. Suntikkan CSS untuk mengubah background seluruh web menjadi merah pastel yang soft (tidak norak)
-        st.markdown("""
-            <style>
-                .stApp {
-                    background-color: #fff5f5;
-                    transition: background-color 0.4s ease-in-out;
-                }
-            </style>
-        """, unsafe_allow_html=True)
-        
-        # 2. Tampilan Kotak Pesan Pop-up/Dialog Konfirmasi yang Kontras (Putih Bersih)
         st.markdown("""
             <div style="background-color: #ffffff; padding: 25px; border-top: 6px solid #ff4b4b; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-top: 15px; margin-bottom: 20px;">
                 <h4 style="color: #ff4b4b; margin-top: 0; margin-bottom: 10px;">🛑 Konfirmasi Pengosongan Lapangan Parkir</h4>
@@ -334,18 +334,17 @@ with tab6:
             </div>
         """, unsafe_allow_html=True)
         
-        # Tombol aksi di dalam pop-up konfirmasi (Ya / Batal)
         col_ya, col_batal = st.columns(2)
         
         with col_ya:
             if st.button("Ya, Kosongkan Sekarang", type="primary", use_container_width=True):
                 parkiran.reset_parkiran()
                 st.session_state.riwayat_pendapatan = []
-                st.session_state.konfirmasi_reset = False  # Matikan state konfirmasi
+                st.session_state.konfirmasi_reset = False
                 st.success("Sistem berhasil dikosongkan total!")
                 st.rerun()
                 
         with col_batal:
             if st.button("Batalkan Proses", type="secondary", use_container_width=True):
-                st.session_state.konfirmasi_reset = False  # Matikan state konfirmasi & kembalikan background ke normal
+                st.session_state.konfirmasi_reset = False
                 st.rerun()
