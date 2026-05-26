@@ -105,7 +105,7 @@ class SistemParkirValet:
         while current:
             if current.plat == target_plat:
                 return {
-                    "posisi": positioning,
+                    "posisi": posisi
                     "plat": current.plat,
                     "merk": current.merk,
                     "pemilik": current.pemilik,
