@@ -217,7 +217,7 @@ with tab1:
 # --- MENU 2: CHECK-OUT ---
 with tab2:
     st.header("Form Billing Kasir")
-    plat_keluar = st.text_input("Masukkan Plat Nomor Mobil yang Ingin Keluar", key="input_checkout")
+    plat_keluar = st.text_input("Masukkan Plat Nomor Kendaraan yang Ingin Keluar", key="input_checkout")
     tombol_keluar = st.button("Proses Pembayaran Keluar", type="primary")
     
     if tombol_keluar:
