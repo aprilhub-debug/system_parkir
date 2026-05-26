@@ -170,7 +170,6 @@ st.markdown(f"""
 
 
 st.title("🚗 Smart Parking System")
-st.caption("Sistem Manajemen Parkir Terintegrasi - Berbasis Doubly Linked List")
 
 # Inisialisasi Session State data
 if 'parkiran' not in st.session_state:
