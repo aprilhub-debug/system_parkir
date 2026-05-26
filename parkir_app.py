@@ -145,7 +145,7 @@ if 'konfirmasi_reset' not in st.session_state:
 
 # --- KUSTOMISASI BACKGROUND WARNA GLOBAL ---
 if st.session_state.konfirmasi_reset:
-    bg_color = "#8c7373"
+    bg_color = "669999"
 else:
     bg_color = "#f4f6f9"
 
