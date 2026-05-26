@@ -137,7 +137,7 @@ class SistemParkirValet:
 
 # ========== APLIKASI UTAMA (STREAMLIT UI) ==========
 
-st.set_page_config(page_title="Smart Parking System Pro", page_icon="🏢", layout="centered")
+st.set_page_config(page_title="Smart Parking System", page_icon="🏢", layout="centered")
 
 # Inisialisasi session state konfirmasi di bagian paling atas
 if 'konfirmasi_reset' not in st.session_state:
@@ -181,7 +181,7 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📥 Check-In", 
     "📤 Check-Out", 
     "📊 Denah Parkir", 
-    "🔍 Cari Mobil", 
+    "🔍 Cari Kendaraan", 
     "💰 Keuangan", 
     "⚙️ Pengaturan"
 ])
@@ -260,7 +260,7 @@ with tab3:
     else:
         st.info("Kondisi Parkiran Kosong. Belum ada kendaraan yang terdaftar masuk.")
 
-# --- MENU 4: CARI MOBIL ---
+# --- MENU 4: CARI KENDARAAN ---
 with tab4:
     st.header("🔍 Pelacakan Posisi Kendaraan")
     plat_cari = st.text_input("Masukkan Plat Nomor yang Dicari")
@@ -272,11 +272,11 @@ with tab4:
                 st.success(f"Kendaraan ditemukan pada urutan ke-**{hasil_cari['posisi']}** dari pintu keluar!")
                 st.markdown("### 📋 Detail Posisi Antrean")
                 st.write(f"**Nama Pemilik:** {hasil_cari['pemilik']} ({hasil_cari['status']})")
-                st.write(f"**Model Mobil:** {hasil_cari['merk']}")
+                st.write(f"**Model Kendaraan:** {hasil_cari['merk']}")
                 st.write(f"**Jam Masuk:** {hasil_cari['jam_masuk']}")
                 st.markdown("---")
-                st.warning(f"⬅️ **Mobil di Depannya:** {hasil_cari['mobil_depan']}")
-                st.info(f"➡️ **Mobil di Belakangnya:** {hasil_cari['mobil_belakang']}")
+                st.warning(f"⬅️ **Kendaraan di Depannya:** {hasil_cari['mobil_depan']}")
+                st.info(f"➡️ **Kendaraan di Belakangnya:** {hasil_cari['mobil_belakang']}")
             else:
                 st.error("Kendaraan tidak ditemukan di dalam area parkir.")
         else:
