@@ -194,7 +194,7 @@ with tab1:
     
     with st.form("form_pendaftaran", clear_on_submit=True):
         plat_input = st.text_input("Plat Nomor Kendaraan", placeholder="Contoh: B 1234 ABC")
-        merk_input = st.text_input("Merk Kendaraan", placeholder="Contoh: Honda Brio Hitam")
+        merk_input = st.text_input("Merk Kendaraan", placeholder="Contoh: Pajero")
         pemilik_input = st.text_input("Nama Lengkap Pemilik", placeholder="Contoh: Suci Apriliani")
         status_input = st.radio("Pilih Tipe Layanan Parkir", ["Reguler", "VIP"])
         
