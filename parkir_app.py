@@ -137,7 +137,7 @@ class SistemParkirValet:
 
 # ========== APLIKASI UTAMA (STREAMLIT UI) ==========
 
-st.set_page_config(page_title="Smart Parking System Pro", page_icon="🏢", layout="centered")
+st.set_page_config(page_title="Smart Parking System", page_icon="🚗", layout="centered")
 
 # Inisialisasi session state konfirmasi di bagian paling atas
 if 'konfirmasi_reset' not in st.session_state:
