@@ -33,7 +33,7 @@ class SistemParkirValet:
             self.head.prev = mobil_baru
             self.head = mobil_baru
         self.kapasitas += 1
-        return True, f"Kendaraan VIP {merk} ({mobil_baru.plat}) masuk di antrean DEPAN (HEAD)."
+        return True, f"Kendaraan VIP {merk} ({mobil_baru.plat}) masuk di antrean DEPAN."
 
     def parkir_reguler(self, plat, merk, pemilik):
         if self.kapasitas >= self.total_slot_maksimal:
@@ -48,7 +48,7 @@ class SistemParkirValet:
             self.tail.next = mobil_baru
             self.tail = mobil_baru
         self.kapasitas += 1
-        return True, f"Kendaraan Reguler {merk} ({mobil_baru.plat}) masuk di antrean BELAKANG (TAIL)."
+        return True, f"Kendaraan Reguler {merk} ({mobil_baru.plat}) masuk di antrean BELAKANG."
 
     def proses_keluar(self, target_plat):
         target_plat = target_plat.upper()
@@ -194,7 +194,7 @@ with tab1:
     
     with st.form("form_pendaftaran", clear_on_submit=True):
         plat_input = st.text_input("Plat Nomor Kendaraan", placeholder="Contoh: B 1234 ABC")
-        merk_input = st.text_input("Merk Kendaraan", placeholder="Contoh: Pajero")
+        merk_input = st.text_input("Merk Kendaraan", placeholder="Contoh: Avanza/NMX")
         pemilik_input = st.text_input("Nama Lengkap Pemilik", placeholder="Contoh: Suci Apriliani")
         status_input = st.radio("Pilih Tipe Layanan Parkir", ["Reguler", "VIP"])
         
@@ -238,7 +238,7 @@ with tab2:
                 with col_kanan:
                     st.markdown(f"**Jam Masuk** : {struk['waktu_masuk']}")
                     st.markdown(f"**Jam Keluar** : {struk['waktu_keluar']}")
-                    st.markdown(f"**Durasi Parkir** : {struk['lama_jam']} Jam (Skala Simulasi)")
+                    st.markdown(f"**Durasi Parkir** : {struk['lama_jam']} Jam")
                 st.markdown("---")
                 st.info(f"### TOTAL TAGIHAN: Rp {struk['total_biaya']:,}")
             else:
